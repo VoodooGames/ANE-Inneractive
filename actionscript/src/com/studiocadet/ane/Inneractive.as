@@ -138,17 +138,19 @@ package com.studiocadet.ane {
 		 * @param onSuccess		Called when the banner is displayed. Signature : function(isPaidAd:Boolean):void
 		 * @param onFailure		Called when displaying the banner fails for any reason. Signature : function():void
 		 * @param keywords		Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
-		 * @param age			The user's age
+		 * @param age			The user's age (between 1 and 120). Leave to -1 to ignore this parameter
 		 * @param gender		The user's gender. One of the GENDER_* constants
 		 */
 		public static function displayBanner(alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function, 
-											 keywords:String = null, age:uint = 0, gender:String = null):void 
+											 keywords:String = null, age:int = -1, gender:String = null):void 
 		{
 			// Check parameters :
 			if(ALIGNMENTS.indexOf(alignment) == -1) 
 				throw new Error("Invalid alignment : " + alignment);
 			if(refreshRate < 15 || refreshRate > 300)
 				throw new Error("Invalid refresh rate : " + refreshRate + " (min:15, max:300)");
+			if(age == 0 || age > 120)
+				throw new Error("Invalid age : " + age + " (min:1, max:120, ignore:<0)");
 			if(gender && gender != GENDER_F && gender != GENDER_M)
 				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
 			
@@ -161,13 +163,13 @@ package com.studiocadet.ane {
 			function onStatus(ev:StatusEvent):void {
 				if(ev.code == EVENT_BANNER_DISPLAYED) {
 					log("Banner displayed (is paid ? " + ev.level + ")");
-					context.removeEventListener(StatusEvent.STATUS, onStatus);
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onSuccess != null)
 						onSuccess(Boolean(ev.level));
 				}
 				else if(ev.code == EVENT_BANNER_FAILED) {
-					log("Banner failed to display.");
-					context.removeEventListener(StatusEvent.STATUS, onStatus);
+					log("Banner failed to display : " + ev.level);
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFailure != null)
 						onFailure();
 				}
@@ -200,11 +202,13 @@ package com.studiocadet.ane {
 		 * @param onFetched	Called when the ad is successfully fetched. Signature : function():void
 		 * @param onFailure	Called when the ad fails to be fetched. Signature : function(errorMessage:String):void
 		 * @param keywords	Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
-		 * @param age		The user's age
+		 * @param age		The user's age (between 1 and 120). Leave to -1 to ignore this parameter
 		 * @param gender	The user's gender. One of the GENDER_* constants
 		 */
-		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:uint = 0, gender:String = null):void {
+		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:int = -1, gender:String = null):void {
 			
+			if(age == 0 || age > 120)
+				throw new Error("Invalid age : " + age + " (min:1, max:120, ignore:<0)");
 			if(gender && gender != GENDER_F && gender != GENDER_M)
 				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
 			
@@ -215,13 +219,13 @@ package com.studiocadet.ane {
 			function onStatus(ev:StatusEvent):void {
 				if(ev.code == EVENT_INTERSTITIAL_FETCHED) {
 					log("Interstitial fetched succcessfully.");
-					context.removeEventListener(StatusEvent.STATUS, onStatus);
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFetched != null)
 						onFetched();
 				}
 				else if(ev.code == EVENT_INTERSTITIAL_FETCH_FAILED) {
 					log("Interstitial fetch failed.");
-					context.removeEventListener(StatusEvent.STATUS, onStatus);
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFailure != null)
 						onFailure();
 				}
@@ -247,7 +251,7 @@ package com.studiocadet.ane {
 				}
 				if(ev.code == EVENT_INTERSTITIAL_DISMISSED) {
 					log("Interstitial dismissed.");
-					context.removeEventListener(StatusEvent.STATUS, onStatus);
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onDismiss != null)
 						onDismiss();
 				}
