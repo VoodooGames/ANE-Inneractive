@@ -149,10 +149,12 @@ package com.studiocadet.ane {
 				throw new Error("Invalid alignment : " + alignment);
 			if(refreshRate < 15 || refreshRate > 300)
 				throw new Error("Invalid refresh rate : " + refreshRate + " (min:15, max:300)");
+			if(gender && gender != GENDER_F && gender != GENDER_M)
+				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
 			
 			// Prepare callbacks :
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
-			context.call("ia_displayBanner", alignment, refreshRate);
+			context.call("ia_displayBanner", alignment, refreshRate, keywords, age, gender);
 			log("Displaying banner (align:" + alignment + ", refreshRate:" + refreshRate + "s)");
 			
 			// Banner display callbacks :
@@ -202,8 +204,12 @@ package com.studiocadet.ane {
 		 * @param gender	The user's gender. One of the GENDER_* constants
 		 */
 		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:uint = 0, gender:String = null):void {
+			
+			if(gender && gender != GENDER_F && gender != GENDER_M)
+				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
+			
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
-			context.call("ia_fetchInterstitial");
+			context.call("ia_fetchInterstitial", keywords, age, gender);
 			log("Fetching an interstitial ...");
 			
 			function onStatus(ev:StatusEvent):void {
