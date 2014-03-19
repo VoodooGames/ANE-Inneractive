@@ -126,35 +126,6 @@ package com.studiocadet.ane {
 		}
 		
 		
-		////////////////
-		// TARGETTING //
-		////////////////
-		
-		/**
-		 * Sets the session keywords relevant to this user’s specific session. For example: cars,music,sports (comma separated, w/o spaces)
-		 */
-		public static function setKeywords(keywords:String):void {
-			context.call("ia_setKeywords", keywords);
-			log("Targetting keywords set to : " + keywords);
-		}
-		
-		/**
-		 * Sets the user's age, used for ad targetting.
-		 */
-		public static function setAge(age:uint):void {
-			context.call("ia_setAge", age);
-			log("User's age set to : " + age);			
-		}
-		
-		/**
-		 * Sets the user's gender, one of the GENDER_* constants.
-		 */
-		public static function setGender(gender:String):void {
-			context.call("ia_setGender", gender);
-			log("User's gender set to : " + gender);
-		}
-		
-		
 		/////////////
 		// BANNERS //
 		/////////////
@@ -166,9 +137,13 @@ package com.studiocadet.ane {
 		 * @param refreshRate	The number of seconds between ad refreshes (min:15, max:300)
 		 * @param onSuccess		Called when the banner is displayed. Signature : function(isPaidAd:Boolean):void
 		 * @param onFailure		Called when displaying the banner fails for any reason. Signature : function():void
+		 * @param keywords		Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
+		 * @param age			The user's age
+		 * @param gender		The user's gender. One of the GENDER_* constants
 		 */
-		public static function displayBanner(alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function):void {
-			
+		public static function displayBanner(alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function, 
+											 keywords:String = null, age:uint = 0, gender:String = null):void 
+		{
 			// Check parameters :
 			if(ALIGNMENTS.indexOf(alignment) == -1) 
 				throw new Error("Invalid alignment : " + alignment);
@@ -222,8 +197,11 @@ package com.studiocadet.ane {
 		 * 
 		 * @param onFetched	Called when the ad is successfully fetched. Signature : function():void
 		 * @param onFailure	Called when the ad fails to be fetched. Signature : function(errorMessage:String):void
+		 * @param keywords	Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
+		 * @param age		The user's age
+		 * @param gender	The user's gender. One of the GENDER_* constants
 		 */
-		public static function fetchInterstitial(onFetched:Function, onFailure:Function):void {
+		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:uint = 0, gender:String = null):void {
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
 			context.call("ia_fetchInterstitial");
 			log("Fetching an interstitial ...");
