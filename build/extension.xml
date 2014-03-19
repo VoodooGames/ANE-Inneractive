@@ -1,0 +1,24 @@
+<extension xmlns="http://ns.adobe.com/air/extension/3.1">
+  <id>com.studiocadet.Inneractive</id>
+  <versionNumber>1.0</versionNumber>
+  <platforms>
+    <platform name="iPhone-ARM">
+            <applicationDeployment>
+                <nativeLibrary>libInneractive.a</nativeLibrary>
+                <initializer>InneractiveInitializer</initializer> 
+            </applicationDeployment>
+    </platform>
+ 
+   <platform name="Android-ARM"> 
+        <applicationDeployment> 
+            <nativeLibrary>libInneractive.jar</nativeLibrary> 
+            <initializer>com.studiocadet.InneractiveExtension</initializer> 
+            <finalizer>com.studiocadet.InneractiveExtension</finalizer> 
+        </applicationDeployment> 
+    </platform>
+    
+    <platform name="default"> 
+        <applicationDeployment/> 
+    </platform> 
+  </platforms>
+</extension>

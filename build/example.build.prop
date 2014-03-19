@@ -1,0 +1,14 @@
+name = Inneractive
+
+flex.sdk = /path/to/your/flexsdk/folder
+
+bin.ext = 
+bat.ext = 
+
+ios.sdkversion = iphoneos
+
+android.sdk = /path/to/your/android-sdk/platforms/android-16
+
+javac.dir = /path/to/the/javac/to/use/for/Android/compilation
+
+export.dir = /path/to/where/you/want/to/export/the/ANE/file

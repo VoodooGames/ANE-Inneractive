@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Air Native Extension Build Scripts" default="all">
+
+    <!-- Config -->
+    <property file="build.prop"/>
+
+    <!-- All -->
+    <target name="all" depends="ios,android,swc,swf,package" description="Full build of extension"/>
+
+    <!-- iOS -->
+    <target name="ios" description="Build iOS Library">
+		<echo message="Build iOS Library ..."/>
+        <mkdir dir="../bin/ios/build/"/>
+
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+            <arg line="-project ${name}.xcodeproj"/>
+            <arg line="-alltargets clean"/>
+        </exec>
+
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+            <arg line="-project ${name}.xcodeproj"/>
+            <arg line="-sdk ${ios.sdkversion}"/>
+            <arg line="-alltargets"/>
+            <arg line="-configuration Release"/>
+            <arg line="SYMROOT=../bin/ios/build/"/>
+        </exec>
+
+        <copy file="../bin/ios/build/Release-iphoneos/lib${name}.a" todir="../bin/ios" overwrite="true"/>
+
+        <delete dir="../bin/ios/build/"/>
+		<echo message="Done."/>
+    </target>
+
+    <!-- Android -->
+    <target name="android" description="Build Android Library">
+		<echo message="Build Android Library ..."/>
+        <delete dir="../bin/android/temp"/>
+        <mkdir dir="../bin/android/temp/classes"/>
+
+        <javac srcdir="../android/src" destdir="../bin/android/temp/classes" includeantruntime="false" target="1.6" source="1.6" fork="yes" executable="${javac.dir}/javac${bin.ext}">
+            <classpath>
+				<pathelement location="${android.sdk}/android.jar"/>
+				<pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
+				<pathelement location="../android/libs/inneractiveAdSDK-v4.0.3.jar"/>
+			</classpath>
+		</javac>
+
+        <mkdir dir="../bin/android/temp/zip"/>
+        <unzip src="../android/libs/inneractiveAdSDK-v4.0.3.jar" dest="../bin/android/temp/zip"/>
+		<copy todir="../bin/android/temp/classes/com">
+			<fileset dir="../bin/android/temp/zip/com"/>
+		</copy>
+
+        <jar basedir="../bin/android/temp/classes" destfile="../bin/android/lib${name}.jar"/>
+        <delete dir="../bin/android/temp"/>
+		<echo message="Done."/>
+    </target>
+
+    <!-- Actionscript -->
+    <target name="swc" description="Build SWC library">
+		<echo message="Build SWC library ..."/>
+        <mkdir dir="../bin/actionscript/"/>
+
+        <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
+            <include name="**/*.as"/>
+        </fileset>
+
+        <pathconvert property="classlist" refid="classfiles" pathsep=" " dirsep=".">
+            <regexpmapper from=".*src.(.*)\.as" to="\1"/>
+        </pathconvert>
+
+        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
+        	<env key="AIR_SDK_HOME" value="${flex.sdk}"/>
+            <arg line='-source-path ../actionscript/src'/>
+            <arg line='-output ../bin/actionscript/${name}.swc'/>
+            <arg line='-swf-version=14'/>
+            <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-include-classes ${classlist}'/>
+        </exec>
+		<echo message="Done."/>
+	</target>
+	
+	<!-- Propagate library.swf -->
+	<target name="swf" description="Extract and copy library.swf from SWC library">
+		<echo message="Extract and copy library.swf from SWC library ..."/>
+		<mkdir dir="../bin/default"/>
+		<unzip src="../bin/actionscript/${name}.swc" dest="../bin/actionscript/content" overwrite="true"/>
+        <copy file="../bin/actionscript/content/library.swf" todir="../bin/ios" overwrite="true"/>
+        <copy file="../bin/actionscript/content/library.swf" todir="../bin/android" overwrite="true"/>
+        <copy file="../bin/actionscript/content/library.swf" todir="../bin/default" overwrite="true"/>
+        <delete dir="../bin/actionscript/content/"/>
+		<echo message="Done."/>
+    </target>
+
+    <!-- Package -->
+    <target name="package" description="Create the extension package">
+		<echo message="Create the extension package ..."/>
+        <exec executable="${flex.sdk}/bin/adt${bat.ext}" failonerror="true" dir="../bin">
+            <arg value="-package"/>
+            <arg value="-target"/>
+            <arg value="ane"/>
+            <arg value="${name}.ane"/>
+            <arg value="../build/extension.xml"/>
+            <arg line="-swc actionscript/${name}.swc"/>
+            <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>
+            <arg line="-platform Android-ARM -C android/ ."/>
+            <arg line="-platform default -C default/ ."/>
+        </exec>
+		<echo message="Done."/>
+    </target>
+	
+	<!-- Export -->
+	<target name="export" description="Export the compiled ANE">
+		<echo message="Export the compiled ANE"/>
+		<copy file="../bin/${name}.ane" todir="${export.dir}"/>
+		<echo message="Done."/>
+	</target>
+
+</project>
