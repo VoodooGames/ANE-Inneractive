@@ -3,9 +3,9 @@
 
     <!-- Config -->
     <property file="build.prop"/>
-
+	
     <!-- All -->
-    <target name="all" depends="ios,android,swc,swf,package" description="Full build of extension"/>
+    <target name="all" depends="ios,android,swc,swf,doc,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -92,6 +92,21 @@
 		<echo message="Done."/>
     </target>
 
+	<!-- Add ASDoc inside SWC -->
+	<target name="doc" description="Generate ASDoc">
+		<echo message="Generating asdoc ..."/>
+		<mkdir dir="../doc"/>
+		<exec executable="${flex.sdk}/bin/asdoc${bin.ext}" failonerror="true">
+            <arg line='-load-config="${flex.sdk}/frameworks/airmobile-config.xml"'/>
+			<arg line="-main-title '${name} ANE API Documentation'" />
+            <arg line="-window-title '${name} ANE API Documentation'" />
+            <arg line="-source-path ../actionscript/src" />
+			<arg line="-doc-sources ../actionscript/src" />
+			<arg line="-output ../doc" />
+        </exec>
+		<echo message="Done."/>
+	</target>
+	
     <!-- Package -->
     <target name="package" description="Create the extension package">
 		<echo message="Create the extension package ..."/>
