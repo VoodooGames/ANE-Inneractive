@@ -1,6 +1,7 @@
 package com.studiocadet.utils;
 
 import com.adobe.fre.FREObject;
+import com.adobe.fre.FREWrongThreadException;
 
 /**
  * A set of tools to ease working with FRE objects.
@@ -15,14 +16,12 @@ public class FREUtils {
 			return null;
 		
 		String s = null;
-		
 		try {
 			s = args[index].getAsString();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return s;
 	}
 	
@@ -34,14 +33,12 @@ public class FREUtils {
 			return null;
 		
 		Integer i = null;
-		
 		try {
 			i = args[index].getAsInt();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return i;
 	}
 	
@@ -53,14 +50,12 @@ public class FREUtils {
 			return null;
 		
 		Boolean b = null;
-		
 		try {
 			b = args[index].getAsBool();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return b;
 	}
 	
@@ -72,14 +67,72 @@ public class FREUtils {
 			return null;
 		
 		Double d = null;
-		
 		try {
 			d = args[index].getAsDouble();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return d;
+	}
+	
+	/**
+	 * Safely returns an FREObject with the given string value, or null if something goes wrong.
+	 */
+	public static FREObject newObject(String stringValue) {
+		try {
+			return FREObject.newObject(stringValue);
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Safely returns an FREObject with the given int value, or null if something goes wrong.
+	 */
+	public static FREObject newObject(int intValue) {
+		try {
+			return FREObject.newObject(intValue);
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Safely returns an FREObject with the given boolean value, or null if something goes wrong.
+	 */
+	public static FREObject newObject(boolean booleanValue) {
+		try {
+			return FREObject.newObject(booleanValue);
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Safely returns an FREObject with the given double value, or null if something goes wrong.
+	 */
+	public static FREObject newObject(double doubleValue) {
+		try {
+			return FREObject.newObject(doubleValue);
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Safely returns an FREObject with the given ActionScript class and constructor arguments, or null if something goes wrong.
+	 */
+	public static FREObject newObject(String className, FREObject[] constructorArgs) {
+		try {
+			return FREObject.newObject(className, constructorArgs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

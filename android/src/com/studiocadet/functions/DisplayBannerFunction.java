@@ -20,10 +20,6 @@ public class DisplayBannerFunction implements FREFunction {
 	private static final String ALIGN_TOP_LEFT = "TOP_LEFT";
 	private static final String ALIGN_TOP_RIGHT = "TOP_RIGHT";
 	
-	private static final String GENDER_F = "F";
-	private static final String GENDER_M = "M";
-	
-	
 	/**
 	 * Expected arguments : alignment, refreshRate, keywords, age, gender
 	 */
@@ -66,7 +62,7 @@ public class DisplayBannerFunction implements FREFunction {
 		if(age != null && age < 0)
 			age = null;
 		
-		if(gender != null && !gender.equals(GENDER_F) && !gender.equals(GENDER_M))
+		if(gender != null && !gender.equals(InneractiveExtension.GENDER_F) && !gender.equals(InneractiveExtension.GENDER_M))
 			gender = null;
 		
 		// Call the method :

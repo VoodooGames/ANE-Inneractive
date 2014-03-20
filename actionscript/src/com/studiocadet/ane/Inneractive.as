@@ -59,6 +59,7 @@ package com.studiocadet.ane {
 		
 		/** The logging function you want to use. Defaults to trace. */
 		public static var logger:Function = trace;
+		public static var logPrefix:String = "[Inneractive]";
 		
 		private static var _isSupported:Boolean;
 		private static var _isSupportedInitialized:Boolean;
@@ -199,7 +200,7 @@ package com.studiocadet.ane {
 		/**
 		 * Fetches an interstitial ad with the given parameters.
 		 * 
-		 * @param onFetched	Called when the ad is successfully fetched. Signature : function():void
+		 * @param onFetched	Called when the ad is successfully fetched. Signature : function(isPaidAd:Boolean):void
 		 * @param onFailure	Called when the ad fails to be fetched. Signature : function(errorMessage:String):void
 		 * @param keywords	Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
 		 * @param age		The user's age (between 1 and 120). Leave to -1 to ignore this parameter
@@ -221,7 +222,7 @@ package com.studiocadet.ane {
 					log("Interstitial fetched succcessfully.");
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFetched != null)
-						onFetched();
+						onFetched(Boolean(ev.level));
 				}
 				else if(ev.code == EVENT_INTERSTITIAL_FETCH_FAILED) {
 					log("Interstitial fetch failed.");
@@ -238,24 +239,31 @@ package com.studiocadet.ane {
 		 * @param onDismiss	Called when the user closes the ad. Signature : function():void
 		 * @param onClick	Called when the user clicks on the ad. Signature : function():void
 		 */
-		public static function showInterstitial(onDismiss:Function, onClick:Function):void {
-			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
-			context.call("ia_showInterstitial");
+		public static function showInterstitial(onDismiss:Function, onClick:Function):Boolean {
 			log("Showing the fetched interstitial.");
+			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
+			var interstitialDisplayed:Boolean = context.call("ia_showInterstitial");
+			if(interstitialDisplayed)
+				log("Interstitial displayed successfully.");
+			else
+				log("Interstitial failed to display");
 			
 			function onStatus(ev:StatusEvent):void {
 				if(ev.code == EVENT_INTERSTITIAL_CLICKED) {
 					log("Interstitial clicked.");
+					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onClick != null)
 						onClick();
 				}
-				if(ev.code == EVENT_INTERSTITIAL_DISMISSED) {
+				else if(ev.code == EVENT_INTERSTITIAL_DISMISSED) {
 					log("Interstitial dismissed.");
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onDismiss != null)
 						onDismiss();
 				}
 			}
+			
+			return interstitialDisplayed;
 		}
 		
 		
@@ -272,7 +280,7 @@ package com.studiocadet.ane {
 			if(!additionnalMessages)
 				additionnalMessages = [];
 			
-			logger(message + " " + additionnalMessages.join(" "));
+			logger((logPrefix && logPrefix.length > 0 ? logPrefix + " " : "") + message + " " + additionnalMessages.join(" "));
 		}
 		
 		/**

@@ -18,6 +18,11 @@ public class InneractiveExtension implements FREExtension {
 	/** The context instance. */
 	public static InneractiveExtensionContext context;
 	
+	/** The female gender to use in Inneractive targeting parameters. */
+	public static final String GENDER_F = "F";
+	/** The male gender to use in Inneractive targeting parameters. */
+	public static final String GENDER_M = "M";
+	
 	
 	// METHODS :
 	

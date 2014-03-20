@@ -25,7 +25,7 @@ public class BannerListener implements InneractiveAdListener {
 	@Override
 	public void onIaAdFailed() {
 		Log.i(InneractiveExtension.TAG, "Banner ad failed");
-		InneractiveExtension.context.onBannerFailed();
+		InneractiveExtension.context.onBannerFailed("Inneractive SDK failed to receive a banner");
 	}
 
 	@Override
