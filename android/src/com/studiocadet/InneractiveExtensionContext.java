@@ -250,6 +250,7 @@ public class InneractiveExtensionContext extends FREContext {
 		if(interstitialLayout != null) {
 			getMainView().removeView(interstitialLayout);
 			interstitialLayout = null;
+			InneractiveAd.cleanInterstitialAd();
 			Log.i(InneractiveExtension.TAG, "Interstitial layout removed.");
 		}
 	}
