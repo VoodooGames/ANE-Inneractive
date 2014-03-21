@@ -59,6 +59,7 @@ package com.studiocadet.ane {
 		
 		/** The logging function you want to use. Defaults to trace. */
 		public static var logger:Function = trace;
+		/** The prefix appended to every log message. Defaults to "[Inneractive]". */
 		public static var logPrefix:String = "[Inneractive]";
 		
 		private static var _isSupported:Boolean;
@@ -88,6 +89,9 @@ package com.studiocadet.ane {
 		/**
 		 * Initializes the extension with the given shortened app ID and the given device type.
 		 * 
+		 * @param shortenedAppID	An appID on Inneractive is of the form MyCompany_MyApp_DeviceType. Only the MyCompany_MyApp part 
+		 * 							is expected here.
+		 * @param deviceType		One of the DEVICE_* constants, or leave it to null to auto-detect it.
 		 */
 		public static function init(shortenedAppID:String, deviceType:String= null):void {
 			
@@ -178,7 +182,7 @@ package com.studiocadet.ane {
 		}
 		
 		/**
-		 * Returns the banner's size. This method will work as long as the extension has been initialized.
+		 * Returns the banner's size (x = width, y = height). This method will work as long as the extension has been initialized.
 		 */
 		public static function getBannerSize():Point {
 			return bannerSize;
