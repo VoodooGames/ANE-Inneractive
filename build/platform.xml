@@ -1,21 +1,17 @@
-<platform xmlns="http://ns.adobe.com/air/extension/3.1">
+<platform xmlns="http://ns.adobe.com/air/extension/4.0">
     <sdkVersion>6.0</sdkVersion>
     <linkerOptions>
     	<option>-ObjC</option>
-    	<option>-framework AddressBook</option>
-    	<option>-framework AddressBookUI</option>
-    	<option>-framework CoreMotion</option>
+    	<option>-weak_framework AdSupport</option>
+    	<option>-weak_framework StoreKit</option>
     	<option>-framework EventKit</option>
-    	<option>-weak_framework iAd</option>
-    	<option>-weak_framework MessageUI</option>
-        <option>-framework MediaPlayer</option>
-        <option>-framework OpenAL</option>
-        <option>-weak_framework AdSupport</option>
-        <option>-weak_framework PassKit</option>
-        <option>-framework CoreTelephony</option>
-        <option>-weak_framework AVFoundation</option>
-        <option>-lsqlite3</option>
-        <option>-lz</option>
+    	<option>-framework EventKitUI</option>
+    	<option>-framework MediaPlayer</option>
+    	<option>-framework SystemConfiguration</option>
+    	<option>-lz</option>
         <option>-lz.1.2.5</option>
-    </linkerOptions> 
+    </linkerOptions>
+     <packagedDependencies>
+        <packagedDependency>InneractiveAdSDK.a</packagedDependency>
+    </packagedDependencies>
 </platform>

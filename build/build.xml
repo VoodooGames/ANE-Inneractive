@@ -12,21 +12,22 @@
 		<echo message="Build iOS Library ..."/>
         <mkdir dir="../bin/ios/build/"/>
 
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/${name}">
             <arg line="-project ${name}.xcodeproj"/>
             <arg line="-alltargets clean"/>
         </exec>
 
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/${name}">
             <arg line="-project ${name}.xcodeproj"/>
             <arg line="-sdk ${ios.sdkversion}"/>
             <arg line="-alltargets"/>
             <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../bin/ios/build/"/>
+            <arg line="SYMROOT=../../bin/ios/build/"/>
         </exec>
 
         <copy file="../bin/ios/build/Release-iphoneos/lib${name}.a" todir="../bin/ios" overwrite="true"/>
-
+		<copy file="../ios/inneractiveAdSDK/armv7-7s/InneractiveAdSDK.a" todir="../bin/ios" overwrite="true"/>
+		
         <delete dir="../bin/ios/build/"/>
 		<echo message="Done."/>
     </target>
@@ -117,7 +118,7 @@
             <arg value="${name}.ane"/>
             <arg value="../build/extension.xml"/>
             <arg line="-swc actionscript/${name}.swc"/>
-            <!--<arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>-->
+            <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>

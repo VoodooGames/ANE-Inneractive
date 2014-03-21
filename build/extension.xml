@@ -1,14 +1,14 @@
-<extension xmlns="http://ns.adobe.com/air/extension/3.1">
+<extension xmlns="http://ns.adobe.com/air/extension/4.0">
   <id>com.studiocadet.Inneractive</id>
   <versionNumber>1.0</versionNumber>
   <platforms>
-    <!--<platform name="iPhone-ARM">
+    <platform name="iPhone-ARM">
             <applicationDeployment>
                 <nativeLibrary>libInneractive.a</nativeLibrary>
-                <initializer>InneractiveInitializer</initializer> 
+                <initializer>InneractiveExtensionInitializer</initializer> 
             </applicationDeployment>
     </platform>
- -->
+ 
    <platform name="Android-ARM"> 
         <applicationDeployment> 
             <nativeLibrary>libInneractive.jar</nativeLibrary> 
