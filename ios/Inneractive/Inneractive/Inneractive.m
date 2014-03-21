@@ -74,12 +74,12 @@ static id sharedInstance = nil;
 
 - (void)IaAdReceived {
     NSLog(@"Banner paid ad received");
-    dispatchNativeEvent(@"true", @"BANNER_DISPLAYED");
+    dispatchNativeEvent(@"BANNER_DISPLAYED", @"true");
 }
 
 - (void)IaDefaultAdReceived {
     NSLog(@"Banner default ad received");
-    dispatchNativeEvent(@"false", @"BANNER_DISPLAYED");
+    dispatchNativeEvent(@"BANNER_DISPLAYED", @"false");
 }
 
 - (void)IaAdFailed {
@@ -89,11 +89,12 @@ static id sharedInstance = nil;
 - (void)IaInterstitialAdLoaded
 {
     NSLog(@"Interstitial paid ad received");
-    dispatchNativeEvent(@"true", @"INTERSTITIAL_FETCHED");}
+    dispatchNativeEvent(@"INTERSTITIAL_FETCHED", @"true");
+}
 
 - (void)IaDefaultInterstitialAdLoaded {
     NSLog(@"Interstitial default ad received");
-    dispatchNativeEvent(@"false", @"INTERSTITIAL_FETCHED");
+    dispatchNativeEvent(@"INTERSTITIAL_FETCHED", @"false");
 }
 
 - (void)IaFailedToLoadInterstitialAd
