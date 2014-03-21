@@ -94,6 +94,7 @@ package com.studiocadet.ane {
 		 * @param deviceType		One of the DEVICE_* constants, or leave it to null to auto-detect it.
 		 */
 		public static function init(shortenedAppID:String, deviceType:String= null):void {
+			if(!isSupported()) return;
 			
 			if(context)
 				throw new Error("Inneractive should only be initialized once !");
@@ -149,6 +150,8 @@ package com.studiocadet.ane {
 		public static function displayBanner(alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function, 
 											 keywords:String = null, age:int = -1, gender:String = null):void 
 		{
+			if(!isSupported()) return;
+			
 			// Check parameters :
 			if(ALIGNMENTS.indexOf(alignment) == -1) 
 				throw new Error("Invalid alignment : " + alignment);
@@ -185,6 +188,8 @@ package com.studiocadet.ane {
 		 * Returns the banner's size (x = width, y = height). This method will work as long as the extension has been initialized.
 		 */
 		public static function getBannerSize():Point {
+			if(!isSupported()) return new Point();
+			
 			return bannerSize;
 		}
 		
@@ -192,6 +197,8 @@ package com.studiocadet.ane {
 		 * Removes the currently displayed banner.
 		 */
 		public static function removeBanner():void {
+			if(!isSupported()) return;
+			
 			context.call("ia_removeBanner");
 			log("Banner removed.");
 		}
@@ -211,6 +218,7 @@ package com.studiocadet.ane {
 		 * @param gender	The user's gender. One of the GENDER_* constants
 		 */
 		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:int = -1, gender:String = null):void {
+			if(!isSupported()) return;
 			
 			if(age == 0 || age > 120)
 				throw new Error("Invalid age : " + age + " (min:1, max:120, ignore:<0)");
@@ -244,6 +252,8 @@ package com.studiocadet.ane {
 		 * @param onClick	Called when the user clicks on the ad. Signature : function():void
 		 */
 		public static function showInterstitial(onDismiss:Function, onClick:Function):Boolean {
+			if(!isSupported()) return false;
+			
 			log("Showing the fetched interstitial.");
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
 			var interstitialDisplayed:Boolean = context.call("ia_showInterstitial");

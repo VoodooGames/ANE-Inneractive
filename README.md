@@ -45,6 +45,7 @@ For Android, you need to add this to your application XML descriptor :
                 <!-- Inneractive interstitials -->
 				<activity android:name="com.inneractive.api.ads.InneractiveFullScreenView"
 						  android:configChanges="orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
 						  android:hardwareAccelerated="true"/>
                 
             </application>
