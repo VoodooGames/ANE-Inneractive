@@ -2,6 +2,7 @@ package com.studiocadet.ane {
 	import flash.events.StatusEvent;
 	import flash.external.ExtensionContext;
 	import flash.geom.Point;
+	import flash.sampler.getLexicalScopes;
 	import flash.system.Capabilities;
 	
 	/**
@@ -33,8 +34,8 @@ package com.studiocadet.ane {
 		private static const EXTENSION_ID:String = "com.studiocadet.Inneractive";
 		
 		private static const SIZE_ANDROID:Point = new Point(320, 50);
-		private static const SIZE_ANDROID_TABLET:Point = new Point(728, 90);
-		private static const SIZE_IPAD:Point = new Point(728, 90);
+		private static const SIZE_ANDROID_TABLET:Point = new Point(768, 90);
+		private static const SIZE_IPAD:Point = new Point(768, 90);
 		private static const SIZE_IPHONE:Point = new Point(320, 50);
 		
 		private static const ALIGNMENTS:Vector.<String> = new <String>[
@@ -99,13 +100,15 @@ package com.studiocadet.ane {
 			if(context)
 				throw new Error("Inneractive should only be initialized once !");
 			
+			var minScreenSize:int = Math.min(Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+			
 			if(deviceType == null) {
 				if(Capabilities.os.indexOf("iPhone") > -1)
 					deviceType = DEVICE_TYPE_IPHONE;
 				else if(Capabilities.os.indexOf("iPad") > -1)
 					deviceType = DEVICE_TYPE_IPAD;
 				else 
-					deviceType = Math.min(Capabilities.screenResolutionX, Capabilities.screenResolutionY) <= 768 ? DEVICE_TYPE_ANDROID : DEVICE_TYPE_ANDROID_TABLET;
+					deviceType = minScreenSize <= 768 ? DEVICE_TYPE_ANDROID : DEVICE_TYPE_ANDROID_TABLET;
 				log("Detected device type : " + deviceType);
 			}
 			
@@ -113,14 +116,14 @@ package com.studiocadet.ane {
 			Inneractive.appID = shortenedAppID;
 			Inneractive.deviceType = deviceType;
 			
-			if(deviceType == DEVICE_TYPE_ANDROID)
-				bannerSize = SIZE_ANDROID;
+			if(deviceType == DEVICE_TYPE_ANDROID) 
+				bannerSize = new Point(minScreenSize, minScreenSize / SIZE_ANDROID.x * SIZE_ANDROID.y);
 			else if(deviceType == DEVICE_TYPE_ANDROID_TABLET)
-				bannerSize = SIZE_ANDROID_TABLET;
+				bannerSize = new Point(minScreenSize, minScreenSize / SIZE_ANDROID_TABLET.x * SIZE_ANDROID_TABLET.y);
 			else if(deviceType == DEVICE_TYPE_IPAD)
-				bannerSize = SIZE_IPAD;
-			else 
-				bannerSize = SIZE_IPHONE;
+				bannerSize = new Point(minScreenSize, minScreenSize / SIZE_IPAD.x * SIZE_IPAD.y);
+			else  
+				bannerSize = new Point(minScreenSize, minScreenSize / SIZE_IPHONE.x * SIZE_IPHONE.y);
 			
 			// Initialize the native part :
 			log("Initializing Inneractive extension with app ID : " + shortenedAppID + "_" + deviceType + " ...");
