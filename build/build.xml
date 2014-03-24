@@ -128,7 +128,7 @@
 	<!-- Export -->
 	<target name="export" description="Export the compiled ANE">
 		<echo message="Export the compiled ANE"/>
-		<copy file="../bin/${name}.ane" todir="${export.dir}"/>
+		<copy file="../bin/${name}.ane" todir="${export.dir}" overwrite="true"/>
 		<echo message="Done."/>
 	</target>
 
