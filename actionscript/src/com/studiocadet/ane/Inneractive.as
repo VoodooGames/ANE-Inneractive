@@ -103,10 +103,10 @@ package com.studiocadet.ane {
 			var minScreenSize:int = Math.min(Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 			
 			if(deviceType == null) {
-				if(Capabilities.os.indexOf("iPhone") > -1)
-					deviceType = DEVICE_TYPE_IPHONE;
-				else if(Capabilities.os.indexOf("iPad") > -1)
+				if(Capabilities.os.indexOf("iPad") > -1)
 					deviceType = DEVICE_TYPE_IPAD;
+				else if(Capabilities.os.indexOf("iPhone") > -1)
+					deviceType = DEVICE_TYPE_IPHONE;
 				else 
 					deviceType = minScreenSize <= 768 ? DEVICE_TYPE_ANDROID : DEVICE_TYPE_ANDROID_TABLET;
 				log("Detected device type : " + deviceType);
