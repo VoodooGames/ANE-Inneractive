@@ -12,9 +12,6 @@
 /** The extension context. */
 FREContext extCtx = nil;
 
-/** The Inneractive App id set during the extension context initialization. */
-NSString *appId = nil;
-
 /** The displayed banner ad. */
 InneractiveAd *bannerAd = nil;
 
@@ -128,10 +125,20 @@ DEFINE_ANE_FUNCTION(ia_displayBanner) {
     uint32_t stringLength;
     const uint8_t *tempString;
     
+	// Get appID
+	NSString *appID = nil;
+	
+	if (FREGetObjectAsUTF8(argv[0], &stringLength, &tempString) != FRE_OK) {
+        logAndDispatch(@"Invalid appID.", @"BANNER_FAILED");
+        return nil;
+    }
+    
+    appID = [NSString stringWithUTF8String:(char*)tempString];
+	
     // Get alignment
     NSString *alignment = nil;
     
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &tempString) != FRE_OK) {
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &tempString) != FRE_OK) {
         logAndDispatch(@"Invalid alignment.", @"BANNER_FAILED");
         return nil;
     }
@@ -143,7 +150,7 @@ DEFINE_ANE_FUNCTION(ia_displayBanner) {
     // Get refresh rate
     int32_t refreshRate = 0;
 
-    if (FREGetObjectAsInt32(argv[1], &refreshRate) != FRE_OK) {
+    if (FREGetObjectAsInt32(argv[2], &refreshRate) != FRE_OK) {
         logAndDispatch(@"Invalid refresh rate.", @"BANNER_FAILED");
         return nil;
     }
@@ -154,18 +161,18 @@ DEFINE_ANE_FUNCTION(ia_displayBanner) {
     [optionalParams setObject:[NSNumber numberWithInt:Key_Bottom_Center] forKey:[NSNumber numberWithInt:Key_Alignment]];
     
     // Get keywords
-    if (FREGetObjectAsUTF8(argv[2], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Keywords]];
 
     
     // Get age
-    if (FREGetObjectAsUTF8(argv[3], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[4], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Age]];
         NSLog(@"Age : %s", tempString);
 
 
     // Get gender
-    if (FREGetObjectAsUTF8(argv[4], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[5], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Gender]];
 
     
@@ -203,6 +210,16 @@ DEFINE_ANE_FUNCTION(ia_fetchInterstitial) {
     uint32_t stringLength;
     const uint8_t *tempString;
     
+	// Get appID
+	NSString *appID = nil;
+	
+	if (FREGetObjectAsUTF8(argv[0], &stringLength, &tempString) != FRE_OK) {
+        logAndDispatch(@"Invalid appID.", @"BANNER_FAILED");
+        return nil;
+    }
+    
+    appID = [NSString stringWithUTF8String:(char*)tempString];
+	
     NSMutableDictionary *optionalParams = [[NSMutableDictionary alloc] init];
     [optionalParams setObject:[NSNumber numberWithInt:Key_Bottom_Center] forKey:[NSNumber numberWithInt:Key_Alignment]];
     
@@ -259,7 +276,6 @@ void InneractiveExtensionContextInitializer(void* extData, const uint8_t* ctxTyp
 	*functionsToSet = functionMap;
     
     extCtx = ctx;
-    appId = [NSString stringWithUTF8String:(const char*)ctxType];
 }
 
 void InneractiveExtensionContextFinalizer(FREContext ctx) {
