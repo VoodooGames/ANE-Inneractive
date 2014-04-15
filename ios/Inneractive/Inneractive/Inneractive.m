@@ -176,7 +176,7 @@ DEFINE_ANE_FUNCTION(ia_displayBanner) {
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Gender]];
 
     
-    bannerAd = [[InneractiveAd alloc] initWithAppId:appId withType:IaAdType_Banner withReload:refreshRate withParams:optionalParams];
+    bannerAd = [[InneractiveAd alloc] initWithAppId:appID withType:IaAdType_Banner withReload:refreshRate withParams:optionalParams];
     bannerAd.delegate = [Inneractive sharedInstance];
     bannerAd.clipsToBounds = true;
     
@@ -224,18 +224,18 @@ DEFINE_ANE_FUNCTION(ia_fetchInterstitial) {
     [optionalParams setObject:[NSNumber numberWithInt:Key_Bottom_Center] forKey:[NSNumber numberWithInt:Key_Alignment]];
     
     // Get keywords
-    if (FREGetObjectAsUTF8(argv[2], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Keywords]];
     
     // Get age
-    if (FREGetObjectAsUTF8(argv[3], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Age]];
     
     // Get gender
-    if (FREGetObjectAsUTF8(argv[4], &stringLength, &tempString) == FRE_OK)
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &tempString) == FRE_OK)
         [optionalParams setObject:[NSString stringWithUTF8String:(char*)tempString] forKey:[NSNumber numberWithInt:Key_Gender]];
 
-    [InneractiveAd loadInterstitialAd:appId withParams:optionalParams withDelegate:[Inneractive sharedInstance]];
+    [InneractiveAd loadInterstitialAd:appID withParams:optionalParams withDelegate:[Inneractive sharedInstance]];
     
     return nil;
 }
