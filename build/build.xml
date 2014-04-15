@@ -42,12 +42,12 @@
             <classpath>
 				<pathelement location="${android.sdk}/android.jar"/>
 				<pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
-				<pathelement location="../android/libs/inneractiveAdSDK-v4.0.3.jar"/>
+				<pathelement location="../android/libs/inneractiveAdSDK-v4.0.4.jar"/>
 			</classpath>
 		</javac>
 
         <mkdir dir="../bin/android/temp/zip"/>
-        <unzip src="../android/libs/inneractiveAdSDK-v4.0.3.jar" dest="../bin/android/temp/zip"/>
+        <unzip src="../android/libs/inneractiveAdSDK-v4.0.4.jar" dest="../bin/android/temp/zip"/>
 		<copy todir="../bin/android/temp/classes/com">
 			<fileset dir="../bin/android/temp/zip/com"/>
 		</copy>

@@ -25,8 +25,6 @@ import com.studiocadet.listeners.InterstitialListener;
 public class InneractiveExtensionContext extends FREContext {
 	
 	// PROPERTIES :
-	/** The appID to use for ad requests. */
-	public String appID;
 	
 	/** The app's main view. */
 	public ViewGroup _mainView;
@@ -46,8 +44,7 @@ public class InneractiveExtensionContext extends FREContext {
 	/**
 	 * Creates an InneractiveExtensionContext and initializes Inneractive SDK with the given app ID.
 	 */
-	public InneractiveExtensionContext(String appID) {
-		this.appID = appID;
+	public InneractiveExtensionContext() {
 	}
 	
 	/**
@@ -67,7 +64,7 @@ public class InneractiveExtensionContext extends FREContext {
 	/**
 	 * Displays and stores a banner with the given parameters.	
 	 */
-	public void displayBanner(InneractiveAd.IaAdAlignment alignment, Integer refreshRate, String keywords, Integer age, String gender) {
+	public void displayBanner(String appID, InneractiveAd.IaAdAlignment alignment, Integer refreshRate, String keywords, Integer age, String gender) {
 		
 		// Only one banner at a time !
 		if(bannerAd != null || bannerLayout != null) {
@@ -142,7 +139,7 @@ public class InneractiveExtensionContext extends FREContext {
 	/**
 	 * Prefetches an interstitial ad with the given targeting parameters.
 	 */
-	public void fetchInterstitial(String keywords, Integer age, String gender) {
+	public void fetchInterstitial(String appID, String keywords, Integer age, String gender) {
 		
 		// Check for a previously fetched and unused interstitial :
 		if(InneractiveAd.isInterstitialReady()) {

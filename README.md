@@ -7,7 +7,7 @@ Inneractive SDK Versions
 ---------
 
 * iOS: 2.0.7
-* Android: 4.0.3
+* Android: 4.0.4
 
 Documentation
 ----------

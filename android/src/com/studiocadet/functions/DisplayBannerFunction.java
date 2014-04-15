@@ -27,11 +27,12 @@ public class DisplayBannerFunction implements FREFunction {
 	public FREObject call(FREContext context, FREObject[] args) {
 		
 		// Get calling parameters :
-		String stringAlignment = FREUtils.getString(args, 0);
-		Integer refreshRate = FREUtils.getInteger(args, 1);
-		String keywords = FREUtils.getString(args, 2);
-		Integer age = FREUtils.getInteger(args, 3);
-		String gender = FREUtils.getString(args, 4);
+		String appID = FREUtils.getString(args, 0);
+		String stringAlignment = FREUtils.getString(args, 1);
+		Integer refreshRate = FREUtils.getInteger(args, 2);
+		String keywords = FREUtils.getString(args, 3);
+		Integer age = FREUtils.getInteger(args, 4);
+		String gender = FREUtils.getString(args, 5);
 		
 		// Enforce parameters values :
 		InneractiveAd.IaAdAlignment alignment = null;
@@ -66,7 +67,7 @@ public class DisplayBannerFunction implements FREFunction {
 			gender = null;
 		
 		// Call the method :
-		InneractiveExtension.context.displayBanner(alignment, refreshRate, keywords, age, gender);
+		InneractiveExtension.context.displayBanner(appID, alignment, refreshRate, keywords, age, gender);
 		
 		return null;
 	}

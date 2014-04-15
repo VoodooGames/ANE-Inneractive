@@ -15,9 +15,10 @@ public class FetchInterstitialFunction implements FREFunction {
 	public FREObject call(FREContext context, FREObject[] args) {
 		
 		// Get calling parameters :
-		String keywords = FREUtils.getString(args, 0);
-		Integer age = FREUtils.getInteger(args, 1);
-		String gender = FREUtils.getString(args, 2);
+		String appID = FREUtils.getString(args, 0);
+		String keywords = FREUtils.getString(args, 1);
+		Integer age = FREUtils.getInteger(args, 2);
+		String gender = FREUtils.getString(args, 3);
 		
 		// Enforce parameters values :
 		if(age != null && age < 0)
@@ -27,7 +28,7 @@ public class FetchInterstitialFunction implements FREFunction {
 			gender = null;
 		
 		// Call the method :
-		InneractiveExtension.context.fetchInterstitial(keywords, age, gender);
+		InneractiveExtension.context.fetchInterstitial(appID, keywords, age, gender);
 		
 		return null;
 	}

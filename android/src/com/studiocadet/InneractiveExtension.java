@@ -27,11 +27,11 @@ public class InneractiveExtension implements FREExtension {
 	// METHODS :
 	
 	/**
-	 * Creates a new extension context with the given app ID.
+	 * Creates a new extension context.
 	 */
 	@Override
-	public FREContext createContext(String appID) {
-		context = new InneractiveExtensionContext(appID);
+	public FREContext createContext(String type) {
+		context = new InneractiveExtensionContext();
 		return context;
 	}
 

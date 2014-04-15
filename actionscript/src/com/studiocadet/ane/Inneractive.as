@@ -79,8 +79,6 @@ package com.studiocadet.ane {
 		
 		/** The extension context. */
 		private static var context:ExtensionContext;
-		/** The shortened app ID. */
-		private static var appID:String;
 		/** The device type. */
 		private static var deviceType:String;
 		/** The banner size. */
@@ -90,11 +88,9 @@ package com.studiocadet.ane {
 		/**
 		 * Initializes the extension with the given shortened app ID and the given device type.
 		 * 
-		 * @param shortenedAppID	An appID on Inneractive is of the form MyCompany_MyApp_DeviceType. Only the MyCompany_MyApp part 
-		 * 							is expected here.
 		 * @param deviceType		One of the DEVICE_* constants, or leave it to null to auto-detect it.
 		 */
-		public static function init(shortenedAppID:String, deviceType:String= null):void {
+		public static function init(deviceType:String= null):void {
 			if(!isSupported()) return;
 			
 			if(context)
@@ -113,7 +109,6 @@ package com.studiocadet.ane {
 			}
 			
 			// Iniitialize AS part :
-			Inneractive.appID = shortenedAppID;
 			Inneractive.deviceType = deviceType;
 			
 			if(deviceType == DEVICE_TYPE_ANDROID) 
@@ -126,8 +121,8 @@ package com.studiocadet.ane {
 				bannerSize = new Point(minScreenSize, minScreenSize / SIZE_IPHONE.x * SIZE_IPHONE.y);
 			
 			// Initialize the native part :
-			log("Initializing Inneractive extension with app ID : " + shortenedAppID + "_" + deviceType + " ...");
-			context = ExtensionContext.createExtensionContext(EXTENSION_ID, shortenedAppID + "_" + deviceType);
+			log("Initializing Inneractive extension (device type : " + deviceType + ") ...");
+			context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
 			if(context == null) 
 				throw new Error("Inneractive is not supported !");
 			
@@ -142,15 +137,16 @@ package com.studiocadet.ane {
 		/**
 		 * Displays a banner with the given alignment and refresh rate.
 		 * 
-		 * @param alignment		One of the ALIGN_* constants
-		 * @param refreshRate	The number of seconds between ad refreshes (min:15, max:300)
-		 * @param onSuccess		Called when the banner is displayed. Signature : function(isPaidAd:Boolean):void
-		 * @param onFailure		Called when displaying the banner fails for any reason. Signature : function():void
-		 * @param keywords		Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
-		 * @param age			The user's age (between 1 and 120). Leave to -1 to ignore this parameter
-		 * @param gender		The user's gender. One of the GENDER_* constants
+		 * @param shortenedAppID	The appID to use, without the "_AutoDeviceType" part added by Inneractive
+		 * @param alignment			One of the ALIGN_* constants
+		 * @param refreshRate		The number of seconds between ad refreshes (min:15, max:300)
+		 * @param onSuccess			Called when the banner is displayed. Signature : function(isPaidAd:Boolean):void
+		 * @param onFailure			Called when displaying the banner fails for any reason. Signature : function():void
+		 * @param keywords			Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
+		 * @param age				The user's age (between 1 and 120). Leave to -1 to ignore this parameter
+		 * @param gender			The user's gender. One of the GENDER_* constants
 		 */
-		public static function displayBanner(alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function, 
+		public static function displayBanner(shortenedAppID:String, alignment:String, refreshRate:uint, onSuccess:Function, onFailure:Function, 
 											 keywords:String = null, age:int = -1, gender:String = null):void 
 		{
 			if(!isSupported()) return;
@@ -165,21 +161,23 @@ package com.studiocadet.ane {
 			if(gender && gender != GENDER_F && gender != GENDER_M)
 				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
 			
+			const appID:String = shortenedAppID + "_" + deviceType;
+			
 			// Prepare callbacks :
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
-			context.call("ia_displayBanner", alignment, refreshRate, keywords, age, gender);
-			log("Displaying banner (align:" + alignment + ", refreshRate:" + refreshRate + "s)");
+			context.call("ia_displayBanner", appID, alignment, refreshRate, keywords, age, gender);
+			log("Displaying banner for " + appID + " (align:" + alignment + ", refreshRate:" + refreshRate + "s)");
 			
 			// Banner display callbacks :
 			function onStatus(ev:StatusEvent):void {
 				if(ev.code == EVENT_BANNER_DISPLAYED) {
-					log("Banner displayed (is paid ? " + ev.level + ")");
+					log("Banner displayed for " + appID + " (is paid ? " + ev.level + ")");
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onSuccess != null)
 						onSuccess(Boolean(ev.level));
 				}
 				else if(ev.code == EVENT_BANNER_FAILED) {
-					log("Banner failed to display : " + ev.level);
+					log("Banner failed to display for " + appID + " : " + ev.level);
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFailure != null)
 						onFailure();
@@ -214,13 +212,16 @@ package com.studiocadet.ane {
 		/**
 		 * Fetches an interstitial ad with the given parameters.
 		 * 
-		 * @param onFetched	Called when the ad is successfully fetched. Signature : function(isPaidAd:Boolean):void
-		 * @param onFailure	Called when the ad fails to be fetched. Signature : function(errorMessage:String):void
-		 * @param keywords	Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
-		 * @param age		The user's age (between 1 and 120). Leave to -1 to ignore this parameter
-		 * @param gender	The user's gender. One of the GENDER_* constants
+		 * @param shortenedAppID	The appID to fetch an interstitial for, without the "_AutoDeviceType" part added by Inneractive
+		 * @param onFetched			Called when the ad is successfully fetched. Signature : function(isPaidAd:Boolean):void
+		 * @param onFailure			Called when the ad fails to be fetched. Signature : function(errorMessage:String):void
+		 * @param keywords			Relevant keywords for ad targeting. For example: cars,music,sports (comma separated, w/o spaces)
+		 * @param age				The user's age (between 1 and 120). Leave to -1 to ignore this parameter
+		 * @param gender			The user's gender. One of the GENDER_* constants
 		 */
-		public static function fetchInterstitial(onFetched:Function, onFailure:Function, keywords:String = null, age:int = -1, gender:String = null):void {
+		public static function fetchInterstitial(shortenedAppID:String, onFetched:Function, onFailure:Function, 
+												 keywords:String = null, age:int = -1, gender:String = null):void 
+		{
 			if(!isSupported()) return;
 			
 			if(age == 0 || age > 120)
@@ -228,19 +229,21 @@ package com.studiocadet.ane {
 			if(gender && gender != GENDER_F && gender != GENDER_M)
 				throw new Error("Invalid gender : " + gender + ". Use one of the GENDER_* constants.");
 			
+			const appID:String = shortenedAppID + "_" + deviceType;
+			
 			context.addEventListener(StatusEvent.STATUS, onStatus, false, 0, true);
-			context.call("ia_fetchInterstitial", keywords, age, gender);
-			log("Fetching an interstitial ...");
+			context.call("ia_fetchInterstitial", appID, keywords, age, gender);
+			log("Fetching an interstitial for " + appID + " ...");
 			
 			function onStatus(ev:StatusEvent):void {
 				if(ev.code == EVENT_INTERSTITIAL_FETCHED) {
-					log("Interstitial fetched succcessfully.");
+					log("Interstitial for " + appID + " fetched succcessfully.");
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFetched != null)
 						onFetched(Boolean(ev.level));
 				}
 				else if(ev.code == EVENT_INTERSTITIAL_FETCH_FAILED) {
-					log("Interstitial fetch failed.");
+					log("Interstitial for " + appID + " fetch failed.");
 					context.removeEventListener(StatusEvent.STATUS, arguments.callee);
 					if(onFailure != null)
 						onFailure();
