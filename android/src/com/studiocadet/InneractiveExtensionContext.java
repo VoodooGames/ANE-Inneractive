@@ -6,8 +6,6 @@ import java.util.Map;
 
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -34,8 +32,6 @@ public class InneractiveExtensionContext extends FREContext {
 	/** The displayed banner, if any. */
 	public InneractiveAd bannerAd;
 	
-	/** The displayed interstitial layout container, if any. */
-	public LinearLayout interstitialLayout;
 	/** Whether the last fetched interstitial is a paid ad or a house (free) ad. */
 	public Boolean fetchedInterstitialIsPaidAd;
 	
@@ -222,17 +218,6 @@ public class InneractiveExtensionContext extends FREContext {
 			return false;
 		}
 		
-		// Create the interstitial layout :
-		interstitialLayout = new LinearLayout(getActivity());
-		interstitialLayout.setGravity(Gravity.CENTER);
-		interstitialLayout.setBackgroundColor(0xAA000000);
-		interstitialLayout.setOnTouchListener(new View.OnTouchListener() { // -> avoid passing touches to underlying views while the ad is displayed
-			@Override public boolean onTouch(View v, MotionEvent event) {
-				return true;
-			}
-		});
-		getMainView().addView(interstitialLayout, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-		
 		// Displays the interstitial ad :
 		Log.i(InneractiveExtension.TAG, "Displaying the previously fetched interstitial.");
 		InneractiveAd.showInterstitialAd(getActivity());
@@ -244,12 +229,8 @@ public class InneractiveExtensionContext extends FREContext {
 	 * Removes the currently displayed interstitial layout.
 	 */
 	private void removeInterstitial() {
-		if(interstitialLayout != null) {
-			getMainView().removeView(interstitialLayout);
-			interstitialLayout = null;
-			InneractiveAd.cleanInterstitialAd();
-			Log.i(InneractiveExtension.TAG, "Interstitial layout removed.");
-		}
+		InneractiveAd.cleanInterstitialAd();
+		Log.i(InneractiveExtension.TAG, "Interstitial layout cleared.");
 	}
 	
 	/////////////////
